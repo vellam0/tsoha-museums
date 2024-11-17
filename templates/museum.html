@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Lisää museo{% endblock %}
+{% block content %}
+
+<img style="width: 950px; padding: 20px;" src="{{museum.img_url}}">
+<h1>{{museum.name}}</h1>
+
+<p><strong>Kuvaus:</strong> {{ museum.bio }}</p>
+<p><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
+<p><strong>Sijainti:</strong> Lat: {{ museum.latitude }}, Lon: {{ museum.longitude }}</p>
+<p><strong>Tyyppi:</strong> {{ museum.museum_type + "museo" }}</p>
+<p><strong>Tagit:</strong> {{ museum.tags }}</p>
+
+{% if user.id == 1 %}
+<a href="{{url_for('edit_museum', museum_id=museum.id)}}">Muokkaa museon tietoja</a>
+{% endif %}
+
+<h2>Arvostele museo: </h2>
+<form id="review-form" action="{{ url_for('show_museum', museum_id=museum.id) }}" method="POST">
+    <label for="review_title">Otsikko:</label>
+    <input type="text" id="review_title" name="review_title" required>
+    <br>
+
+    <label for="review_text">Teksti:</label>
+    <textarea type="text" id="review_text" name="review_text" required></textarea>
+    <br>
+
+    <label for="stars">Tähdet (0-5):</label>
+    <input type="range" id="stars" name="stars" min="0" max="5">
+    <br>
+
+    <button id="add-review-button" type="submit">Lähetä</button>
+    <br>
+</form>
+
+<div class="review">
+    <hr>
+        <p>Arvostelut:</p>
+    {% for review in museum.reviews: %}
+          <ul class="list-group rounded-0 bg-light p-2">
+              <li class="list-group-item rounded-0">
+                <p>Arvosana: {{ review.stars }} / 5</p>
+                <hr>
+                <h5>{{review.title}}</h3>
+                  <div class="reviewText">
+                      {{review.text|safe}}
+                      <small>— {{review.review_author.username}} on {{review.date}}</small>
+                      {% if user.id == 1 or user.id == review.review_author.id %}
+                          <a class="btn rounded-0 btn-sm btn-dark btn-outline-light" href="{{url_for('delete_review', review_id=review.id)}}">
+                            Poista arvostelu
+                        </a>
+                      {% endif %}
+                  </div>
+              </li>
+          </ul>
+    {% endfor %}
+  </div>
+
+{% endblock %}

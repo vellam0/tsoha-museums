@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Museot: {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+<header>
+    <nav class="nav nav-pills nav-fill">
+        <a class="nav-item nav-link" href="{{url_for('index')}}">Koti</a>
+        <a class="nav-item nav-link" href="{{url_for('reviews')}}">Arvostelut</a>
+        <a class="nav-item nav-link" href="{{url_for('search')}}">Haku</a>
+        {% if session.username %}
+        <a class="nav-item nav-link" href="{{url_for('logout')}}">Kirjaudu ulos</a>
+        {% else %}
+        <a class="nav-item nav-link" href="{{url_for('login')}}">Kirjaudu sisään</a>
+        {% endif %}
+    </nav>
+</header>
+ 
+{% block content %}{% endblock %}
+
+
+<footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+</footer>

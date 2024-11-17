@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Haku{% endblock %}
+{% block content %}
+
+<body>
+    <h1>Arvostelut</h1>
+    <ul>
+        {% for museum in museums %}
+            {% if museum.reviews %}
+            <h2>Arvostelut kohteena {{ museum.name }}:</h2>
+                {% for review in museum.reviews %}
+                    <hr>
+                    <h3>{{ review.title }}</h3>
+                    </a>
+                    <p>{{ review.text }}</p>
+                    <p>{{ review.stars }} / 5</p>
+                    <p>kirjoittaja: {{ review.review_author.username }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+</body>
+
+{% endblock %}

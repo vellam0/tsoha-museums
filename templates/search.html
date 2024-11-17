@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block title %}Haku{% endblock %}
+{% block content %}
+
+<div class="container py-4">
+    <h2 class="pb-2 border-bottom">Etsi sivustolta</h2>
+    <br>
+      <div class="row">
+        <div>
+  
+          <div class="content">
+            <form id="search-form" action="/haku" method="POST">
+                <label for="search_field">Hakusanat:</label>
+                <input type="text" id="search_field" name="search_field">
+                <br>
+                <br>
+                <label for="search_type_field">Museotyyppi:</label>
+                <br>
+                <input type="checkbox" id="type_art" name="museum_type" value="taide">
+                <label for="type_art">Taidemuseot</label>
+                <br>
+                <input type="checkbox" id="type_history" name="museum_type" value="historia">
+                <label for="type_history">Kulttuurihistorialliset museot</label>
+                <br>
+                <input type="checkbox" id="type_science" name="museum_type" value="tiede">
+                <label for="type_science">Luonnontieteelliset museot</label>
+                <br>
+                <input type="checkbox" id="type_specialty" name="museum_type" value="erikois">
+                <label for="type_specialty">Erikoismuseot</label>
+                <br>
+                <input type="checkbox" id="type_other" name="museum_type" value="muu">
+                <label for="type_other">Muut</label>
+                <br>
+                <button id="search-button" type="submit">Hae</button>
+            </form>
+        </div>
+          
+        </div>
+      </div>
+  
+  
+        • Hae museon nimen mukaan: Kirjoita hakupalkkiin museon nimi tai sen osa löytääksesi haluamasi museon nopeasti.
+        <br>
+        • Tagien mukaan: Syötä hakupalkkiin esimerkiksi aihealueeseen liittyvä avainsana (esim. "nykytaide").
+        <br>
+        • Museotyypin mukaan: Valitse museotyyppi suodattimista nähdäksesi siihen kuuluvat museot.
+  </div>
+  
+  <div class="container py-4">
+  
+    {% if content and content[0] is string %}
+        <p>{{ content[0] }}</p>
+    {% elif content %}
+      <h3 id="site-content" class="pb-2">Hakutulokset:</h3>
+      {% for museum in content %}
+  
+      <div class="row g-0 overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative border border-dark">
+          <div class="col p-4 d-flex flex-column bg-white position-static">
+            <h4 class="mb-0"> {{museum.name}} </h4>
+              <hr>
+            <div class="mb-1 text-body-secondary">
+                <p>Tagit: {{museum.tags}}</p>
+            </div>
+            <p class="card-text mb-auto"> {{museum.bio[:115] + "..."}} </p>
+            <a href="{{ url_for('show_museum', museum_id=museum.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
+              Lue lisää
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+            </a>
+          </div>
+          <div class="col-auto d-none d-lg-block">
+            <img width="370" height="255" src="{{museum.img_url}}">
+          </div>
+        </div>
+      {% endfor %}
+
+      {% else %}
+      <p>Hakutuloksia ei löytynyt.</p>
+
+      {% endif %}
+
+  </div>
+
+
+{% endblock %}

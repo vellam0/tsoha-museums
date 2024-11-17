@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Etusivu{% endblock %}
+{% block content %}
+
+<body>
+    <h1>Museot</h1>
+    <ul>
+        {% for museum in museums %}
+            <a href="{{ url_for('show_museum', museum_id=museum.id) }}">
+                <h2>{{ museum.name }}</h2>
+            </a>
+            <p>{{ museum.bio }}</p>
+            <p><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
+            <p><strong>Sijainti:</strong> Lat: {{ museum.latitude }}, Lon: {{ museum.longitude }}</p>
+            <p><strong>Tyyppi:</strong> {{ museum.museum_type }}</p>
+            <p><strong>Tagit:</strong> {{ museum.tags }}</p>
+            {% if museum.img_url %}
+            <img src="{{ museum.img_url }}" alt="{{ museum.name }}" style="max-width: 200px; height: auto;">
+            {% endif %}
+            <hr>
+        {% endfor %}
+    </ul>
+</body>
+
+{% endblock %}

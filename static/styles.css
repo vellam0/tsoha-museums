@@ -1,0 +1,94 @@
+body > :not(header, footer) {
+    margin: auto;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+.btn-primary {
+    background-color: #556b2f;
+    border-color: #333f1d;
+}
+
+.content {
+    padding: 1em;
+ } 
+
+footer {
+    background-color: #333f1d;
+}
+
+form #login-button {
+    margin: 1em;
+    background-color: white;
+    text-align: center;
+}
+
+form #museum-button {
+    margin: 1em;
+    background-color: white;
+    text-align: center;
+}
+
+form #museum-button:hover {
+    background: #333f1d;
+    color: white;
+}
+
+form #login-button:hover {
+    background: #333f1d;
+    color: white;
+}
+
+#login-form, #register-form {
+    margin: 1em;
+    max-width: 15em;
+    padding: .5em;
+    background-color: #f5f5dc;
+}
+
+#museum-form {
+    margin: 1em;
+    padding: .5em;
+    background-color: #f5f5dc;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+#museum-bio {
+    height: 10em;
+}
+
+#museum-form input[type="text"], textarea {
+    width: 90%;
+}
+
+.nav-link {
+    color: #f5f5dc;
+    background-color: transparent;
+}
+
+.nav-link:hover {
+    color: #556b2f;
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+.nav-pills {
+    background-color: #333f1d;
+}
+
+.nav-pills .nav-link {
+    color: #f5f5dc;
+}
+
+.radio-group {
+    display: inline-block;
+}
+
+.signup-button {
+    margin: 1em;
+    background-color: #333f1d;
+    color: #f5f5dc;
+}
