@@ -11,7 +11,7 @@
             </a>
             <p>{{ museum.bio }}</p>
             <p><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
-            <p><strong>Sijainti:</strong> Lat: {{ museum.latitude }}, Lon: {{ museum.longitude }}</p>
+            <p><strong>Osoite:</strong> {{ museum.address }}</p>
             <p><strong>Tyyppi:</strong> {{ museum.museum_type }}</p>
             <p><strong>Tagit:</strong> {{ museum.tags }}</p>
             {% if museum.img_url %}
@@ -20,6 +20,10 @@
             <hr>
         {% endfor %}
     </ul>
+    <br>
+    <a href="{{ url_for('add_museum') }}">
+        <h2>Lisää uusi museo</h2>
+    </a>
 </body>
 
 {% endblock %}

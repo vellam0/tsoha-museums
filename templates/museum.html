@@ -7,7 +7,7 @@
 
 <p><strong>Kuvaus:</strong> {{ museum.bio }}</p>
 <p><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
-<p><strong>Sijainti:</strong> Lat: {{ museum.latitude }}, Lon: {{ museum.longitude }}</p>
+<p><strong>Osoite:</strong> {{ museum.address }}</p>
 <p><strong>Tyyppi:</strong> {{ museum.museum_type + "museo" }}</p>
 <p><strong>Tagit:</strong> {{ museum.tags }}</p>
 
@@ -36,16 +36,16 @@
 <div class="review">
     <hr>
         <p>Arvostelut:</p>
-    {% for review in museum.reviews: %}
+    {% for review in reviews: %}
           <ul class="list-group rounded-0 bg-light p-2">
               <li class="list-group-item rounded-0">
                 <p>Arvosana: {{ review.stars }} / 5</p>
                 <hr>
-                <h5>{{review.title}}</h3>
+                <h5>{{ review.title }}</h3>
                   <div class="reviewText">
-                      {{review.text|safe}}
-                      <small>— {{review.review_author.username}} on {{review.date}}</small>
-                      {% if user.id == 1 or user.id == review.review_author.id %}
+                      {{ review.review_text }}
+                      <small>— {{ review.username }} on {{ review.date }}</small>
+                      {% if user.id == 1 or user.id == review.author_id %}
                           <a class="btn rounded-0 btn-sm btn-dark btn-outline-light" href="{{url_for('delete_review', review_id=review.id)}}">
                             Poista arvostelu
                         </a>

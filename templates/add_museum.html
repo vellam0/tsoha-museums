@@ -3,14 +3,6 @@
 {% block content %}
 
 {% if is_edit: %}
-<!-- name=museum.name,
-bio=museum.bio,
-opening_hours=museum.hours,
-latitude=float(museum.latitude),
-longitude=float(museum.longitude),
-museum_type=museum.museum_type,
-tags=museum.tags if museum.tags else None,
-img_url=museum.img_url if museum.img_url else None -->
 
 <body>
     <div class="content">
@@ -20,16 +12,12 @@ img_url=museum.img_url if museum.img_url else None -->
             <input type="text" id="museum_name" name="museum_name" value="{{ museum.name }}" required>
             <br>
 
-            <label for="latitude">Sijainnin leveysaste (latitude):</label>
-            <input type="text" id="latitude" name="latitude" value="{{ museum.latitude }}" placeholder="Esim: 60.20289" required>
-            <br>
-            
-            <label for="longitude">Sijainnin pituusaste (longitude):</label>
-            <input type="text" id="longitude" name="longitude" value="{{ museum.longitude }}" placeholder="Esim: 24.9611" required>
-            <br>            
-
             <label for="museum_bio">Kuvaus:</label>
-            <textarea id="museum_bio" name="museum_bio" required>{{ museum.bio }}</textarea>
+            <textarea type="text" id="museum_bio" name="museum_bio" required></textarea>
+            <br>
+
+            <label for="address">Osoite:</label>
+            <input type="text" id="address" name="address" value="{{ museum.address }}" required>
             <br>
 
             <label for="museum_hours">Aukioloajat:</label>
@@ -85,17 +73,13 @@ img_url=museum.img_url if museum.img_url else None -->
             <input type="text" id="museum_name" name="museum_name" required>
             <br>
 
-            <label for="latitude">Sijainnin leveysaste (latitude):</label>
-            <input type="text" id="latitude" name="latitude" placeholder="Esim: 60.20289" required>
-            <br>
-            
-            <label for="longitude">Sijainnin pituusaste (longitude):</label>
-            <input type="text" id="longitude" name="longitude" placeholder="Esim: 24.9611" required>
-            <br>            
-
             <label for="museum_bio">Kuvaus:</label>
             <textarea type="text" id="museum_bio" name="museum_bio" required></textarea>
             <br>
+
+            <label for="address">Osoite:</label>
+            <input type="text" id="address" name="address" required>
+            <br>          
 
             <label for="museum_hours">Aukioloajat:</label>
             <textarea type="text" id="museum_hours" name="museum_hours" required></textarea>
