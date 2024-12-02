@@ -9,4 +9,4 @@ include/
 instance/
 Lib/
 Scripts/
-pyvenv.cfg
+pyvenv.cfgvenv/
