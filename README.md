@@ -9,3 +9,6 @@ Tähän mennessä toteutetut ominaisuudet:
 Vielä työn alla:
 * Käyttäjä näkee museot kartalla ja voi painaa museosta, jolloin siitä näytetään lisää tietoa (kuten kuvaus ja aukioloajat).
 * Käyttäjä näkee myös listan, jossa museot on järjestetty parhaimmasta huonoimpaan arvioiden mukaisesti.
+
+Sovellusta voi testata osoitteessa:
+https://tsoha-museums.onrender.com/
