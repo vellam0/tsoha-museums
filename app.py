@@ -84,9 +84,9 @@ def edit_museum(museum_id):
 def show_museum(museum_id):
     username = session.get("username")
     user = get_user(username)
-    user_id = user.id
     
     if request.method == "POST" and user:
+        user_id = user.id
         create_review(
             title=request.form["review_title"],
             review_text=request.form["review_text"],
