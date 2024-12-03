@@ -30,11 +30,9 @@ def login():
         password = request.form["password"]
         result = login_user(username, password)
         if "error" in result:
-            flash(result["error"])
             return redirect(url_for("login"))
         else:
-            session["username"] = result["username"]
-            flash("Kirjauduttu sisään!")
+            session["username"] = username
             return redirect("/")
         
     return render_template("login.html")
@@ -84,22 +82,20 @@ def edit_museum(museum_id):
 
 @app.route("/museo/<int:museum_id>", methods=["GET", "POST"])
 def show_museum(museum_id):
-    user = None
-    if "username" in session:
-        user = get_user(session["username"])
-
-    if request.method == "POST":
-        if not user:
-            requested_museum = get_museum_by_id(museum_id)
-            reviews = get_reviews(museum_id)
-            return render_template("museum.html", museum=requested_museum, reviews=reviews, user=user)
-        reviews = get_reviews(museum_id)
-        create_review(title=request.form["review_title"],
-                   review_text=request.form["review_text"],
-                   stars=int(request.form["stars"]),
-                   museum_id=museum_id,
-                   author_id=user[0])
-        return redirect(url_for("show_museum", reviews=reviews, museum_id=museum_id))
+    username = session.get("username")
+    user = get_user(username)
+    user_id = user.id
+    
+    if request.method == "POST" and user:
+        create_review(
+            title=request.form["review_title"],
+            review_text=request.form["review_text"],
+            stars=int(request.form["stars"]),
+            museum_id=museum_id,
+            author_id=user_id
+        )
+        return redirect(url_for("show_museum", museum_id=museum_id))    
+    
     reviews = get_reviews(museum_id)
     requested_museum = get_museum_by_id(museum_id)
     return render_template("museum.html", museum=requested_museum, reviews=reviews, user=user)
@@ -113,7 +109,7 @@ def reviews():
 
 @app.route("/poista-arvio/<int:review_id>", methods=["GET", "POST"])
 def delete_review(review_id):
-    museum_id = delete_review(review_id)
+    museum_id = del_review(review_id)
     return redirect(url_for('show_museum', museum_id=museum_id))
 
 
@@ -130,4 +126,4 @@ def search():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000, debug=True)

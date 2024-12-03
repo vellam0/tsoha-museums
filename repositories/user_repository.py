@@ -16,13 +16,13 @@ def login_user(username, password):
     if not user:
         return {"error": "Käyttäjänimeä ei löytynyt."}
     
-    stored_password = user["password"]
+    stored_password = user.password
     if not check_password_hash(stored_password, password):
         return {"error": "Salasana väärin."}
     
     return {"username": username}
 
 def get_user(username):
-    sql = text("SELECT * FROM users WHERE username=:username")
+    sql = text("SELECT id, username FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username": username})
     return result.fetchone()
