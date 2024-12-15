@@ -26,6 +26,23 @@ def del_review(review_id):
     db.session.commit()
     return museum_id
 
+def get_all_reviews():
+    sql = text("""SELECT 
+            reviews.id, 
+            reviews.title, 
+            reviews.review_text, 
+            reviews.stars, 
+            reviews.date, 
+            reviews.museum_id, 
+            reviews.author_id, 
+            users.username
+            FROM reviews
+            JOIN users ON reviews.author_id = users.id""")
+    result = db.session.execute(sql)
+    reviews = result.fetchall()
+    return reviews
+    
+
 def get_reviews(museum_id):
     sql = text("""SELECT 
             reviews.id, 

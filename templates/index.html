@@ -3,27 +3,79 @@
 {% block content %}
 
 <body>
-    <h1>Museot</h1>
-    <ul>
-        {% for museum in museums %}
-            <a href="{{ url_for('show_museum', museum_id=museum.id) }}">
-                <h2>{{ museum.name }}</h2>
-            </a>
-            <p>{{ museum.bio }}</p>
-            <p><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
-            <p><strong>Osoite:</strong> {{ museum.address }}</p>
-            <p><strong>Tyyppi:</strong> {{ museum.museum_type }}</p>
-            <p><strong>Tagit:</strong> {{ museum.tags }}</p>
-            {% if museum.img_url %}
-            <img src="{{ museum.img_url }}" alt="{{ museum.name }}" style="max-width: 200px; height: auto;">
-            {% endif %}
-            <hr>
-        {% endfor %}
-    </ul>
-    <br>
-    <a href="{{ url_for('add_museum') }}">
-        <h2>Lisää uusi museo</h2>
-    </a>
+    <div class="content">
+        <div>
+            <h2 class="m-3">Museot</h2>
+            <div class="card-group m-3">
+                {% for museum in museums[:3] %}
+                <div class="card rounded-0">
+                {% if museum.img_url %}
+                <a href="{{ url_for('show_museum', museum_id=museum.id) }}">
+                    <img src="{{ museum.img_url }}" alt="{{ museum.name }}" class="rounded-0 img-fluid" style="object-fit: cover; height: 220px; width: 100%;">
+                </a>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{{ url_for('show_museum', museum_id=museum.id) }}">{{ museum.name }}</a></h5>
+                    <p class="card-text">{{ museum.bio[:130] + "..." }}</p>
+                </div>
+                <div class="card-footer rounded-0" style="background-color: #333f1d; color: antiquewhite;">
+                    <small class="text-body-secondary">Tagit: {{ museum.tags }}</small>
+                </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="" class="icon-link gap-1 icon-link-hover">
+                    Katso kaikki museot
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <br>
+        <div>
+            <h2 class="m-3">Arvostelut</h2>
+            <div class="card-group m-3">
+                {% for review in reviews[:3] %}
+                <div class="card rounded-0">
+                    <div class="card-body">
+                    <h5 class="card-title"><a href="{{ url_for('show_museum', museum_id=review.museum_id) }}">{{ review.title }}</a></h5>
+                    {% if review.review_text|length > 100 %}
+                        <p class="card-text">{{ review.review_text[:100] + "..." }}</p>
+                        {% else %}
+                        <p class="card-text">{{ review.review_text }}</p>
+                    {% endif %}
+                    <div class="d-flex justify-content-end">
+                        <p class="mb-1">
+                            <span class="text-warning">
+                                {% for star in range(0, review.stars) %}
+                                    <i class="bi bi-star-fill"></i>
+                                {% endfor %}
+                                {% for star in range(review.stars, 5) %}
+                                    <i class="bi bi-star"></i>
+                                {% endfor %}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer rounded-0" style="background-color: #333f1d; color: antiquewhite;">
+                    <small class="text-body-secondary">{{ review.username }} {{ review.date }}</small>
+                </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="" class="icon-link gap-1 icon-link-hover">
+                    Katso kaikki arvostelut
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </a>
+            </div>
+            <br>
+        </div>
+    </div>
 </body>
 
 {% endblock %}

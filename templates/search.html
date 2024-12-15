@@ -31,19 +31,31 @@
                 <input type="radio" id="type_other" name="museum_type" value="muu">
                 <label for="type_other">Muut</label>
                 <br>
-                <button id="search-button" type="submit">Hae</button>
+                <div class="d-flex py-3 justify-content-start">
+                  <button class="btn rounded-0" id="search-button" type="submit">Hae</button>
+                </div>
             </form>
         </div>
-          
         </div>
       </div>
-  
-  
-        • Hae museon nimen mukaan: Kirjoita hakupalkkiin museon nimi tai sen osa löytääksesi haluamasi museon nopeasti.
-        <br>
-        • Tagien mukaan: Syötä hakupalkkiin esimerkiksi aihealueeseen liittyvä avainsana (esim. "nykytaide").
-        <br>
-        • Museotyypin mukaan: Valitse museotyyppi suodattimista nähdäksesi siihen kuuluvat museot.
+
+      <div class="my-3">
+        <li>
+            <div>
+              <p class="d-block">Hae museon nimen mukaan: Kirjoita hakupalkkiin museon nimi tai sen osa löytääksesi haluamasi museon nopeasti.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+              <p class="d-block">Tagien mukaan: Syötä hakupalkkiin esimerkiksi aihealueeseen liittyvä avainsana (esim. "nykytaide").</p>
+            </div>
+        </li>
+        <li>
+            <div>
+              <p class="d-block">Museotyypin mukaan: Valitse museotyyppi suodattimista nähdäksesi siihen kuuluvat museot.</p>
+            </div>
+        </li>
+      </div>
   </div>
   
   <div class="container py-4">
@@ -61,7 +73,7 @@
             <div class="mb-1 text-body-secondary">
                 <p>Tagit: {{museum.tags}}</p>
             </div>
-            <p class="card-text mb-auto"> {{museum.bio[:115] + "..."}} </p>
+            <p class="card-text mb-3"> {{museum.bio[:115] + "..."}} </p>
             <a href="{{ url_for('show_museum', museum_id=museum.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
               Lue lisää
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
@@ -69,7 +81,7 @@
               </svg>
             </a>
           </div>
-          <div class="col-auto d-none d-lg-block">
+          <div class=" d-lg-block justify-content-end">
             <img width="370" height="255" src="{{museum.img_url}}">
           </div>
         </div>

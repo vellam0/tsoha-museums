@@ -1,59 +1,117 @@
 {% extends "layout.html" %}
 {% block title %}Lisää museo{% endblock %}
 {% block content %}
+<body>
+<div class="content apply-margins" id="museum-view">
+  <br>
 
-<img style="width: 950px; padding: 20px;" src="{{museum.img_url}}">
-<h1>{{museum.name}}</h1>
-
-<p><strong>Kuvaus:</strong> {{ museum.bio }}</p>
-<p><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
-<p><strong>Osoite:</strong> {{ museum.address }}</p>
-<p><strong>Tyyppi:</strong> {{ museum.museum_type + "museo" }}</p>
-<p><strong>Tagit:</strong> {{ museum.tags }}</p>
+  <div class="card mb-3">
+    {% if museum.img_url %}
+      <img style="width: 100%; margin-bottom: 1rem;" src="{{museum.img_url}}">
+    {% endif %}
+    <ul class="list-group-flush m-1 p-3">
+      <h3 class="m-3">{{museum.name}}</h3>
+      <hr>
+      <p class="list-group-flush m-3"> {{ museum.bio }}</p>
+      <p class="list-group-flush m-3"><strong>Aukioloajat:</strong> {{ museum.opening_hours }}</p>
+      <p class="list-group-flush m-3"><strong>Osoite:</strong> {{ museum.address }}</p>
+      <p class="list-group-flush m-3"><strong>Tyyppi:</strong> {{ museum.museum_type + "museo" }}</p>
+      <p class="list-group-flush m-3"><strong>Tagit:</strong> {{ museum.tags }}</p>
+    </ul>
+</div>
 
 {% if user.id == 1 %}
-<a href="{{url_for('edit_museum', museum_id=museum.id)}}">Muokkaa museon tietoja</a>
+<div class="text-end">
+    <a href="{{ url_for('edit_museum', museum_id=museum.id) }}" class="btn btn-primary rounded-0">
+        Muokkaa museon tietoja
+    </a>
+    <a href="{{ url_for('delete_museum', museum_id=museum.id) }}" class="btn btn-primary rounded-0">
+      Poista museo
+  </a>
+</div>
 {% endif %}
 
-<h2>Arvostele museo: </h2>
-<form id="review-form" action="{{ url_for('show_museum', museum_id=museum.id) }}" method="POST">
-    <label for="review_title">Otsikko:</label>
-    <input type="text" id="review_title" name="review_title" required>
-    <br>
 
-    <label for="review_text">Teksti:</label>
-    <textarea type="text" id="review_text" name="review_text" required></textarea>
-    <br>
+  <br>
 
-    <label for="stars">Tähdet (0-5):</label>
-    <input type="range" id="stars" name="stars" min="0" max="5">
-    <br>
+{% if user != None %}
+  <h5 class="py-4">Arvostele museo: </h5>
+    <form id="review-form" action="{{ url_for('show_museum', museum_id=museum.id) }}" method="POST">
+        <label for="review_title">Otsikko:</label>
+        <input type="text" id="review_title" name="review_title" required>
 
-    <button id="add-review-button" type="submit">Lähetä</button>
-    <br>
-</form>
+        <label for="review_text">Teksti:</label>
+        <textarea type="text" id="review_text" name="review_text" required></textarea>
 
-<div class="review">
-    <hr>
+        <label for="stars">Tähdet (0-5):</label>
+        <input type="range" id="stars" name="stars" value="3" min="0" max="5" oninput="valueDisplay.textContent=`${'★'.repeat(this.value)}${'☆'.repeat(5 - this.value)}`">
+        <span style="font-size: 30px;" class="text-warning" id="valueDisplay">★★★☆☆</span>
+        <div class="d-flex justify-content-end">
+          <button id="add-review-button" type="submit">Lähetä</button>
+        </div>
+        <br>
+    </form>
+{% else %}
+    <br>
+    <div style="background-color: wheat;" class="modal-body p-3 text-center border">
+        <p>
+          Kirjaudu sisään jättääksesi arvostelun.
+        </p>
+    </div>
+{% endif %}
+
+
+{% if error %}
+<div style="background-color: darkred; color: white; width: 100%;">
+    <div class="modal-body p-4 m-3 text-center">
+    <h5 class="mb-0">Tapahtui virhe!</h5>
+    <br>
+    <p class="mb-0">{{ error }}</p>
+    </div>
+</div>
+{% endif %}
+
+  <div class="review">
+      <hr>
+      {% if reviews %}
         <p>Arvostelut:</p>
-    {% for review in reviews: %}
-          <ul class="list-group rounded-0 bg-light p-2">
-              <li class="list-group-item rounded-0">
-                <p>Arvosana: {{ review.stars }} / 5</p>
-                <hr>
-                <h5>{{ review.title }}</h3>
-                  <div class="reviewText">
-                      {{ review.review_text }}
-                      <small>— {{ review.username }} on {{ review.date }}</small>
-                      {% if user.id == 1 or user.id == review.author_id %}
-                          <a class="btn rounded-0 btn-sm btn-dark btn-outline-light" href="{{url_for('delete_review', review_id=review.id)}}">
-                            Poista arvostelu
-                        </a>
-                      {% endif %}
-                  </div>
-              </li>
-          </ul>
-    {% endfor %}
+        {% for review in reviews: %}
+        <ul class="list-group rounded-0 bg-light p-2 mb-3">
+            <li class="list-group-item rounded-0">
+                <p class="mb-1">
+                    <span class="text-warning">
+                        {% for star in range(0, review.stars) %}
+                            <i class="bi bi-star-fill"></i>
+                        {% endfor %}
+                        {% for star in range(review.stars, 5) %}
+                            <i class="bi bi-star"></i>
+                        {% endfor %}
+                    </span>
+                </p>
+                <br>
+                <h5 class="fw-bold">{{ review.title }}</h5>
+                <p class="reviewText">{{ review.review_text }}</p>
+                <div>
+                    <small>— {{ review.username }} {{ review.date }}</small>
+                </div>
+        
+                {% if user.id == 1 or user.id == review.author_id %}
+                <div class="mt-2">
+                    <a class="btn rounded-0 btn-sm btn-dark btn-outline-light" href="{{ url_for('delete_review', review_id=review.id) }}">
+                        Poista arvostelu
+                    </a>
+                </div>
+                {% endif %}
+            </li>
+        </ul>
+        {% endfor %}
+        
+      {% else %}
+        <p>Ei arvosteluja. </p>
+      {% endif %}
+    </div>
   </div>
+
+</body>
 
 {% endblock %}

@@ -2,18 +2,19 @@
 {% block title %}Lisää museo{% endblock %}
 {% block content %}
 
-{% if is_edit: %}
-
 <body>
-    <div class="content">
+    <div class="page-container py-3 d-flex">
+
+        {% if is_edit: %}
+
         <h1>Muokkaa</h1>
-        <form id="museum-form" action="/lisaa_museo" method="POST">
+        <form id="museum-form" action="{{ url_for('edit_museum', museum_id=museum.id) }}" method="POST">
             <label for="museum_name">Museon nimi:</label>
             <input type="text" id="museum_name" name="museum_name" value="{{ museum.name }}" required>
             <br>
 
             <label for="museum_bio">Kuvaus:</label>
-            <textarea type="text" id="museum_bio" name="museum_bio" required></textarea>
+            <textarea type="text" id="museum_bio" name="museum_bio" required>{{ museum.bio }}</textarea>
             <br>
 
             <label for="address">Osoite:</label>
@@ -56,33 +57,30 @@
             <label for="museum_img">Kuvatiedoston url:</label>
             <input type="text" id="museum_img" name="museum_img" value="{{ museum.img_url }}">
             <br>
-
-            <button id="add-museum-button" type="submit">Lisää museo</button>
+            <div class="d-flex justify-content-end">
+                <button class="btn rounded-0" id="add-museum-button" type="submit">Tallenna muutokset</button>
+            </div>
         </form>
-    </div>
-</body>
-
 
 
 {% else %}
-<body>
-    <div class="content">
+
         <h1>Lisää museo</h1>
         <form id="museum-form" action="/lisaa_museo" method="POST">
             <label for="museum_name">Museon nimi:</label>
-            <input type="text" id="museum_name" name="museum_name" required>
+            <input type="text" id="museum_name" name="museum_name" value="{{ form.museum_name or '' }}" required>
             <br>
 
             <label for="museum_bio">Kuvaus:</label>
-            <textarea type="text" id="museum_bio" name="museum_bio" required></textarea>
+            <textarea type="text" id="museum_bio" name="museum_bio" value="{{ form.museum_bio or '' }}" required></textarea>
             <br>
 
             <label for="address">Osoite:</label>
-            <input type="text" id="address" name="address" required>
+            <input type="text" id="address" name="address" value="{{ form.address or '' }}" required>
             <br>          
 
             <label for="museum_hours">Aukioloajat:</label>
-            <textarea type="text" id="museum_hours" name="museum_hours" required></textarea>
+            <textarea type="text" id="museum_hours" name="museum_hours" value="{{ form.museum_hours or '' }}" required></textarea>
             <br>
 
             <label>Valitse museon tyyppi:</label>
@@ -105,19 +103,32 @@
             <br>
             </div>
             <label for="museum_tags">Tagit (erota pilkulla):</label>
-            <input type="text" id="museum_tags" name="museum_tags" placeholder="Esim: kuvataide, moderni">
+            <input type="text" id="museum_tags" name="museum_tags" value="{{ form.museum_tags or '' }}" placeholder="Esim: kuvataide, moderni">
             <br>
 
             <label for="museum_img">Kuvatiedoston url:</label>
-            <input type="text" id="museum_img" name="museum_img">
+            <input type="text" id="museum_img" name="museum_img" value="{{ form.museum_img or '' }}">
             <br>
 
             <button id="add-museum-button" type="submit">Lisää museo</button>
         </form>
+        {% endif %}
+
+
+        {% if error %}
+        <div style="background-color: darkred; color: white; width: 100%;">
+            <div class="modal-body p-4 m-3 text-center">
+            <h5 class="mb-0">Tapahtui virhe!</h5>
+            <br>
+            <p class="mb-0">{{ error }}</p>
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </body>
-</html>
 
-{% endif %}
+
+
 
 {% endblock %}

@@ -1,15 +1,17 @@
-from flask import redirect, render_template, request, url_for, session, flash
+from flask import redirect, render_template, request, url_for, session
 from config import app
 from repositories.museum_repository \
-    import get_museums, get_museum_by_id, create_museum, del_museum, edit_museum, search_museums
-from repositories.review_repository import create_review, del_review, get_reviews
+    import get_museums, get_museum_by_id, create_museum, del_museum, update_museum, search_museums
+from repositories.review_repository import create_review, del_review, get_reviews, get_all_reviews
 from repositories.user_repository import create_user, get_user, login_user
+from util import validate_login_info, validate_review_form, validate_museum_form
 
 
 @app.route("/")
 def index():
     museums = get_museums()
-    return render_template("index.html", museums=museums)
+    reviews = get_all_reviews()
+    return render_template("index.html", museums=museums, reviews=reviews)
 
 
 @app.route("/rekisterointi", methods=["GET","POST"])
@@ -17,6 +19,16 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
+
+        existing_user = get_user(username)
+        if existing_user:
+            return render_template("register.html", error="Käyttäjänimi on jo käytössä.")
+
+        error = validate_login_info(username, password, confirm_password)
+        if error:
+            return render_template("register.html", error=error)
+
         create_user(username, password)
         session["username"] = username
         return redirect(url_for("index"))
@@ -30,7 +42,7 @@ def login():
         password = request.form["password"]
         result = login_user(username, password)
         if "error" in result:
-            return redirect(url_for("login"))
+            return render_template("login.html", error=result["error"])
         else:
             session["username"] = username
             return redirect("/")
@@ -47,13 +59,17 @@ def logout():
 @app.route("/lisaa_museo", methods=["GET", "POST"])
 def add_museum():
     if request.method == "POST":
-        name = request.form["museum_name"]
-        bio = request.form["museum_bio"]
-        address = request.form["address"]
-        opening_hours = request.form["museum_hours"]
-        museum_type = request.form["museum_type"]
-        tags = request.form["museum_tags"]
-        img_url = request.form["museum_img"]
+        name = request.form.get("museum_name", "")
+        bio = request.form.get("museum_bio", "")
+        address = request.form.get("address", "")
+        opening_hours = request.form.get("museum_hours", "")
+        museum_type = request.form.get("museum_type", "")
+        tags = request.form.get("museum_tags")
+        img_url = request.form.get("museum_img")
+
+        error = validate_museum_form(name, bio, address, opening_hours, museum_type, tags, img_url)
+        if error:
+            return render_template("add_museum.html", error=error, form=request.form)
         create_museum(name=name, 
                         bio=bio, 
                         address=address, 
@@ -63,30 +79,59 @@ def add_museum():
                         img_url=img_url)
         return redirect("/")
     if request.method == "GET":
-        return render_template("add_museum.html")
+        return render_template("add_museum.html", form={})
 
 
 @app.route("/poista_museo/<int:museum_id>", methods=["GET", "POST"])
 def delete_museum(museum_id):
     del_museum(museum_id)
-    return render_template("index.html")
+    return redirect("/")
 
 
 @app.route("/muokkaa_museota/<int:museum_id>", methods=["GET", "POST"])
 def edit_museum(museum_id):
     user = get_user(session["username"])
     museum = get_museum_by_id(museum_id)
+    reviews = get_reviews(museum_id)
 
-    return render_template("add_museum.html", museum=museum, is_edit=True, user=user)
+    if request.method == "POST":
+        name = request.form["museum_name"]
+        bio = request.form["museum_bio"]
+        address = request.form["address"]
+        opening_hours = request.form["museum_hours"]
+        museum_type = request.form["museum_type"]
+        tags = request.form["museum_tags"]
+        img_url = request.form["museum_img"]
+
+        error = validate_museum_form(name, bio, address, opening_hours, tags, img_url, edit_id=museum_id)
+        if error:
+            return render_template("add_museum.html", museum=museum, is_edit=True, error=error)
+        update_museum(museum_id, name, bio, address, opening_hours, museum_type, tags, img_url)
+
+        museum = get_museum_by_id(museum_id)
+        return render_template("museum.html", museum=museum, reviews=reviews, user=user)
+    
+    if request.method == "GET":
+        return render_template("add_museum.html", museum=museum, is_edit=True, user=user)
+    return redirect("/")
 
 
 @app.route("/museo/<int:museum_id>", methods=["GET", "POST"])
 def show_museum(museum_id):
     username = session.get("username")
     user = get_user(username)
-    
+    reviews = get_reviews(museum_id)
+    requested_museum = get_museum_by_id(museum_id)    
+
     if request.method == "POST" and user:
         user_id = user.id
+
+        error = validate_review_form(
+            title=request.form["review_title"],
+            review_text=request.form["review_text"])
+        if error:
+            return render_template("museum.html", museum=requested_museum, reviews=reviews, user=user, error=error)
+
         create_review(
             title=request.form["review_title"],
             review_text=request.form["review_text"],
@@ -95,9 +140,6 @@ def show_museum(museum_id):
             author_id=user_id
         )
         return redirect(url_for("show_museum", museum_id=museum_id))    
-    
-    reviews = get_reviews(museum_id)
-    requested_museum = get_museum_by_id(museum_id)
     return render_template("museum.html", museum=requested_museum, reviews=reviews, user=user)
 
 

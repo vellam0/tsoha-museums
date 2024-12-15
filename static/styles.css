@@ -1,7 +1,26 @@
+a {
+    color: black;
+}
+
+a:hover {
+    color: olive;
+}
+
+.apply-margins {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 body > :not(header, footer) {
     margin: auto;
-    max-width: 45em;
-    font-family: 'Helvetica', 'Arial', sans-serif;
+    max-width: 50%;
+    font-family: 'Century Gothic', 'Arial', sans-serif;
+}
+
+.btn:focus {
+    outline: 2px solid olive;
+    outline-offset: 2px;
+    box-shadow: none;
 }
 
 .btn-primary {
@@ -9,27 +28,39 @@ body > :not(header, footer) {
     border-color: #333f1d;
 }
 
+.btn-primary:hover {
+    background-color: #333f1d;
+    border-color: #333f1d;
+}
+
+.btn-primary:focus {
+    background-color: white;
+}
+
 .content {
+    flex: 1;
     padding: 1em;
- } 
+ }
 
 footer {
     background-color: #333f1d;
+    font-family: 'Century Gothic', 'Arial', sans-serif;
 }
 
 form #login-button {
     margin: 1em;
     background-color: white;
     text-align: center;
+    border-color: black;
 }
 
-form #museum-button {
+form #museum-button, #add-museum-button {
     margin: 1em;
     background-color: white;
     text-align: center;
 }
 
-form #museum-button:hover {
+form #museum-button:hover, #add-museum-button:hover {
     background: #333f1d;
     color: white;
 }
@@ -39,9 +70,22 @@ form #login-button:hover {
     color: white;
 }
 
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+header {
+    font-family: 'Century Gothic', 'Century Gothic', sans-serif;
+    font-size: 24px;
+}
+
+input[type="range"] {
+    accent-color: olive;
+    
+}
+
 #login-form, #register-form {
-    margin: 1em;
-    max-width: 15em;
     padding: .5em;
     background-color: #f5f5dc;
 }
@@ -83,12 +127,50 @@ form #login-button:hover {
     color: #f5f5dc;
 }
 
+.page-container {
+    min-width: 50%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .radio-group {
     display: inline-block;
 }
 
-.signup-button {
-    margin: 1em;
+#review-form {
+    padding: .5em;
+    background-color: #f5f5dc;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+#search-button {
     background-color: #333f1d;
     color: #f5f5dc;
+    border-color: black;
+}
+
+#search-button:hover {
+    background: white;
+    color: black;
+}
+
+#search_field:focus {
+    outline: 2px solid olive;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+#signup-button {
+    background-color: black;
+    color: white;
+    border-color: white;
+}
+
+#signup-button:hover {
+    background: white;
+    color: black;
 }

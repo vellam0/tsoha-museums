@@ -10,3 +10,4 @@ instance/
 Lib/
 Scripts/
 pyvenv.cfgvenv/
+*.pyc

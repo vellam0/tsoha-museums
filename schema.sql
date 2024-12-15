@@ -1,7 +1,7 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(150) NOT NULL
+    username VARCHAR(12) NOT NULL UNIQUE,
+    password VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE museums (
@@ -17,8 +17,8 @@ CREATE TABLE museums (
 
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
-    title TEXT NOT NULL,
-    review_text TEXT NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    review_text VARCHAR(1000) NOT NULL,
     stars INTEGER NOT NULL,
     date TIMESTAMP,
     museum_id INTEGER REFERENCES museums,
