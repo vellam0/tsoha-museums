@@ -25,7 +25,14 @@ def update_locations_from_museums():
         if lat is not None and lon is not None:
             sql_insert = text("""
                 INSERT INTO locations (id, name, address, lat, lon)
-                VALUES (:id, :name, :address, :lat, :lon)""")
+                VALUES (:id, :name, :address, :lat, :lon)
+                ON CONFLICT (id)
+                DO UPDATE SET
+                    name = EXCLUDED.name,
+                    address = EXCLUDED.address,
+                    lat = EXCLUDED.lat,
+                    lon = EXCLUDED.lon
+            """)
             db.session.execute(sql_insert, {
                 'id': museum_id,
                 'name': name,
@@ -33,9 +40,6 @@ def update_locations_from_museums():
                 'lat': lat,
                 'lon': lon
             })
-            print(f"Lisätty: {name} ({lat}, {lon})")
-        else:
-            print(f"Virhe: Ei koordinaatteja osoitteelle {address}")
 
     db.session.commit()
 
