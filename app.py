@@ -30,13 +30,10 @@ def admin_required(f):
 
 
 @app.before_request
-def is_csrf_token():
+def verify_csrf_token():
     if 'csrf_token' not in session:
         session['csrf_token'] = secrets.token_hex(16)
 
-
-@app.before_request
-def verify_csrf_token():
     if request.method == "POST" and request.endpoint not in ["search"]:
         if session["csrf_token"] != request.form["csrf_token"]:
             return "Invalid csrf_token", 403
