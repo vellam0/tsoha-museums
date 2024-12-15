@@ -34,8 +34,8 @@ def validate_museum_form(name, bio, address, opening_hours, museum_type, tags=No
         return "Kuvauksen tulee olla 10-2000 merkkiä pitkä."
     if not address or len(address) < 5 or len(address) > 250:
         return "Osoitteen tulee olla 5-250 merkkiä pitkä."
-    if not opening_hours or len(opening_hours) < 3 or len(opening_hours) > 150:
-        return "Aukioloaikojen tulee olla 3-150 merkkiä pitkä."
+    if not opening_hours or len(opening_hours) < 3 or len(opening_hours) > 500:
+        return "Aukioloaikojen tulee olla 3-500 merkkiä pitkä."
     if tags and len(tags) > 250:
         return "Tagien kokonaispituus ei saa ylittää 250 merkkiä."
     if img_url and not (img_url.startswith("http://") or img_url.startswith("https://")):

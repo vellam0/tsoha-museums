@@ -74,7 +74,7 @@
             <br>
 
             <label for="museum_bio">Kuvaus:</label>
-            <textarea type="text" id="museum_bio" name="museum_bio" value="{{ form.museum_bio or '' }}" required></textarea>
+            <textarea type="text" id="museum_bio" name="museum_bio" required>{{ form.museum_bio or '' }}</textarea>
             <br>
 
             <label for="address">Osoite:</label>
@@ -82,7 +82,7 @@
             <br>          
 
             <label for="museum_hours">Aukioloajat:</label>
-            <textarea type="text" id="museum_hours" name="museum_hours" value="{{ form.museum_hours or '' }}" required></textarea>
+            <textarea type="text" id="museum_hours" name="museum_hours" required>{{ museum.opening_hours or '' }}</textarea>
             <br>
 
             <label>Valitse museon tyyppi:</label>
