@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, url_for, session, jsonify
+from flask import redirect, render_template, request, url_for, session, jsonify, has_request_context
 from datetime import datetime
 from functools import wraps
 from config import app
@@ -9,10 +9,15 @@ from repositories.user_repository import create_user, get_user, login_user, get_
 from repositories.location_repository import update_locations_from_museums, get_map_details
 from util import validate_login_info, validate_review_form, validate_museum_form
 
+location_updated = False
 
-@app.before_first_request
-def update_locations_automatically():
-    update_locations_from_museums()
+
+@app.before_request
+def update_locations_once():
+    global location_updated
+    if not location_updated and has_request_context():
+        update_locations_from_museums()
+        location_updated = True
 
 
 @app.template_filter("format_date")
