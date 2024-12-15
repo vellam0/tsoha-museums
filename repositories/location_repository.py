@@ -6,7 +6,7 @@ import requests
 def address_to_coordinates(address):
     url = "https://nominatim.openstreetmap.org/search"
     params = {'q': address, 'format': 'json', 'countrycodes': 'fi'}
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0'}
+    headers = {'User-Agent': 'Museosovellus/1.0 (18c06ve7l@mozmail.com)'}
     response = requests.get(url, params=params, headers=headers)
     print(response)
     if response.status_code == 200 and response.json():
