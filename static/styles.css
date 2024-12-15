@@ -34,7 +34,7 @@ body > :not(header, footer) {
 }
 
 .btn-primary:focus {
-    background-color: white;
+    background-color: black;
 }
 
 .content {
