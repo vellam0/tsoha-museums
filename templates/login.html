@@ -6,6 +6,7 @@
         <h2 class="my-5">Kirjaudu sisään</h2>
         <hr>
             <form id="login-form" action="/kirjaudu" method="POST" class="container p-3 my-5">
+                <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
                 <div class="mb-3">
                     <label for="username" class="form-label">Käyttäjätunnus:</label>
                     <input type="text" id="username" name="username" class="form-control" required>

@@ -1,10 +1,43 @@
-from flask import redirect, render_template, request, url_for, session
+from flask import redirect, render_template, request, url_for, session, jsonify
+from datetime import datetime
+from functools import wraps
 from config import app
 from repositories.museum_repository \
     import get_museums, get_museum_by_id, create_museum, del_museum, update_museum, search_museums
-from repositories.review_repository import create_review, del_review, get_reviews, get_all_reviews
-from repositories.user_repository import create_user, get_user, login_user
+from repositories.review_repository import create_review, del_review, get_reviews, get_all_reviews, get_average_stars_for_all_museums
+from repositories.user_repository import create_user, get_user, login_user, get_user_roles, add_user_role, delete_user
+from repositories.location_repository import update_locations_from_museums, get_map_details
 from util import validate_login_info, validate_review_form, validate_museum_form
+
+
+@app.before_first_request
+def update_locations_automatically():
+    update_locations_from_museums()
+
+
+@app.template_filter("format_date")
+def format_date(value):
+    try:
+        return datetime.strptime(value, "%d-%m-%Y %H:%M").strftime("%d.%m.%Y klo %H:%M")
+    except (ValueError, TypeError):
+        return value
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user_roles = get_user_roles(session.get("user_id"))
+        if "admin" not in user_roles:
+            return redirect("/")
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.before_request
+def verify_csrf_token():
+    if request.method == "POST" and request.endpoint not in ["search"]:
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return "Invalid csrf_token", 403
 
 
 @app.route("/")
@@ -20,6 +53,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
+        is_admin = "is_admin" in request.form
 
         existing_user = get_user(username)
         if existing_user:
@@ -29,8 +63,15 @@ def register():
         if error:
             return render_template("register.html", error=error)
 
-        create_user(username, password)
+        user_id = create_user(username, password)
+        if is_admin:
+            add_user_role(user_id, "admin")
+        else:
+            add_user_role(user_id, "user")
+
+        session["user_id"] = user_id
         session["username"] = username
+        session["user_roles"] = ["admin"] if is_admin else ["user"]
         return redirect(url_for("index"))
     return render_template("register.html")
 
@@ -45,6 +86,7 @@ def login():
             return render_template("login.html", error=result["error"])
         else:
             session["username"] = username
+            session["user_roles"] = get_user_roles(result["user_id"])
             return redirect("/")
         
     return render_template("login.html")
@@ -83,6 +125,7 @@ def add_museum():
 
 
 @app.route("/poista_museo/<int:museum_id>", methods=["GET", "POST"])
+@admin_required
 def delete_museum(museum_id):
     del_museum(museum_id)
     return redirect("/")
@@ -143,16 +186,57 @@ def show_museum(museum_id):
     return render_template("museum.html", museum=requested_museum, reviews=reviews, user=user)
 
 
+@app.route("/museot")
+def museums():
+    museums = get_museums()
+    avg_stars = get_average_stars_for_all_museums()
+    museum_list = []
+    for museum in museums:
+        museum_list.append({
+            "id": museum.id,
+            "name": museum.name,
+            "bio": museum.bio,
+            "img_url": museum.img_url,
+            "museum_type": museum.museum_type,
+            "avg_stars": int(avg_stars.get(museum.id, 0))
+        })
+
+    sort_by = request.args.get("sort", "name")
+    if sort_by == "stars":
+        museum_list = sorted(museum_list, key=lambda x: x["avg_stars"], reverse=True)
+    else:
+        museum_list = sorted(museum_list, key=lambda x: x["name"].lower())
+
+    return render_template("museums.html", museums=museum_list, sort_by=sort_by)
+
+
 @app.route("/arvostelut")
 def reviews():
-    museums = get_museums()
-    return render_template("reviews.html", museums=museums)
+    museums = {museum.id: museum.name for museum in get_museums()}
+    reviews = get_all_reviews()
+    museums_and_reviews = [{
+        "title": review.title,
+        "text": review.review_text,
+        "stars": review.stars,
+        "username": review.username,
+        "date": review.date,
+        "museum_name": museums.get(review.museum_id, ""),
+        "museum_id": review.museum_id}
+        for review in reviews]
+    
+    sort_by = request.args.get("sort", "date")
+    if sort_by == "stars":
+        museums_and_reviews = sorted(museums_and_reviews, key=lambda x: x["stars"], reverse=True)
+    elif sort_by == "title":
+        museums_and_reviews = sorted(museums_and_reviews, key=lambda x: x["title"].lower())
+
+    return render_template("reviews.html", reviews=museums_and_reviews, sort_by=sort_by)
 
 
 @app.route("/poista-arvio/<int:review_id>", methods=["GET", "POST"])
 def delete_review(review_id):
     museum_id = del_review(review_id)
-    return redirect(url_for('show_museum', museum_id=museum_id))
+    return redirect(url_for("show_museum", museum_id=museum_id))
 
 
 @app.route("/haku", methods=["GET", "POST"])
@@ -165,6 +249,13 @@ def search():
         return render_template("search.html", content=content)
     
     return render_template("search.html", content=content)
+
+
+@app.route("/paikkatiedot")
+def get_locations():
+    locations = jsonify(get_map_details())
+
+    return locations
 
 
 if __name__ == "__main__":

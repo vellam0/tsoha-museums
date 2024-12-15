@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
-{% block title %}Lisää museo{% endblock %}
+{% block title %}{{museum.name}}{% endblock %}
 {% block content %}
 <body>
 <div class="content apply-margins" id="museum-view">
   <br>
 
-  <div class="card mb-3">
+  <div class="card rounded-0 mb-3">
     {% if museum.img_url %}
       <img style="width: 100%; margin-bottom: 1rem;" src="{{museum.img_url}}">
     {% endif %}
@@ -20,7 +20,7 @@
     </ul>
 </div>
 
-{% if user.id == 1 %}
+{% if 'admin' in session['user_roles'] %}
 <div class="text-end">
     <a href="{{ url_for('edit_museum', museum_id=museum.id) }}" class="btn btn-primary rounded-0">
         Muokkaa museon tietoja
@@ -37,6 +37,7 @@
 {% if user != None %}
   <h5 class="py-4">Arvostele museo: </h5>
     <form id="review-form" action="{{ url_for('show_museum', museum_id=museum.id) }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
         <label for="review_title">Otsikko:</label>
         <input type="text" id="review_title" name="review_title" required>
 
@@ -47,7 +48,7 @@
         <input type="range" id="stars" name="stars" value="3" min="0" max="5" oninput="valueDisplay.textContent=`${'★'.repeat(this.value)}${'☆'.repeat(5 - this.value)}`">
         <span style="font-size: 30px;" class="text-warning" id="valueDisplay">★★★☆☆</span>
         <div class="d-flex justify-content-end">
-          <button id="add-review-button" type="submit">Lähetä</button>
+          <button id="add-review-button" class="btn btn-primary rounded-0" type="submit">Lähetä</button>
         </div>
         <br>
     </form>
@@ -92,10 +93,10 @@
                 <h5 class="fw-bold">{{ review.title }}</h5>
                 <p class="reviewText">{{ review.review_text }}</p>
                 <div>
-                    <small>— {{ review.username }} {{ review.date }}</small>
+                    <small>— {{ review.username }} {{ review.date | format_date }}</small>
                 </div>
         
-                {% if user.id == 1 or user.id == review.author_id %}
+                {% if 'admin' in session['user_roles'] or user.id == review.author_id %}
                 <div class="mt-2">
                     <a class="btn rounded-0 btn-sm btn-dark btn-outline-light" href="{{ url_for('delete_review', review_id=review.id) }}">
                         Poista arvostelu

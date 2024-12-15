@@ -14,7 +14,7 @@ a:hover {
 body > :not(header, footer) {
     margin: auto;
     max-width: 50%;
-    font-family: 'Century Gothic', 'Arial', sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 .btn:focus {
@@ -44,7 +44,7 @@ body > :not(header, footer) {
 
 footer {
     background-color: #333f1d;
-    font-family: 'Century Gothic', 'Arial', sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 form #login-button {
@@ -76,8 +76,8 @@ body, html {
 }
 
 header {
-    font-family: 'Century Gothic', 'Century Gothic', sans-serif;
-    font-size: 24px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9vw;
 }
 
 input[type="range"] {

@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Museot{% endblock %}
+{% block content %}
+
+<body>
+    <div class="m-3 py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Museot</h2>
+            <form method="GET" action="{{ url_for('museums') }}">
+                <select name="sort" id="sort" class="form-select w-auto" onchange="this.form.submit()">
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Nimen mukaan A-Ö</option>
+                    <option value="stars" {% if sort_by == 'stars' %}selected{% endif %}>Parhaat arvostelut</option>
+                </select>
+            </form>
+        </div>
+        <div class="list-group">
+            {% for museum in museums %}
+            <div class="list-group-item p-4 mb-3 rounded-0 border">
+                <div class="row">
+                    {% if museum.img_url %}
+                    <div class="col-md-4 d-flex align-items-center justify-content-center">
+                        <img src="{{ museum.img_url }}" alt="{{ museum.name }}" class="img-fluid">
+                    </div>
+                    {% endif %}
+                    <div class="col-md-8">
+                        <h3>
+                            <a href="{{ url_for('show_museum', museum_id=museum.id) }}" class="text-decoration-none text-dark">
+                                {{ museum.name }}
+                            </a>
+                        </h3>
+                        <p class="text-muted">{{ museum.bio }}</p>
+                        <p>Arvosana: 
+                            <span class="text-warning">
+                                {% for star in range(0, museum.avg_stars) %}
+                                    <i class="bi bi-star-fill"></i>
+                                {% endfor %}
+                                {% for star in range(museum.avg_stars, 5) %}
+                                    <i class="bi bi-star"></i>
+                                {% endfor %}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+{% endblock %}

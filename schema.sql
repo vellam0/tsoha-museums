@@ -24,3 +24,22 @@ CREATE TABLE reviews (
     museum_id INTEGER REFERENCES museums,
     author_id INTEGER REFERENCES users
 );
+
+CREATE TABLE locations (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    address TEXT NOT NULL,
+    lat DOUBLE PRECISION NOT NULL,
+    lon DOUBLE PRECISION NOT NULL
+);
+
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE user_roles (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);

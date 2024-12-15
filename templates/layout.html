@@ -8,13 +8,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 30vw;
+            width: 100%;
+        }
+    </style>
 
 </head>
 
 <header>
     <nav class="nav nav-pills nav-fill">
         <a class="nav-item nav-link" href="{{url_for('index')}}">Koti</a>
+        <a class="nav-item nav-link" href="{{url_for('museums')}}">Museot</a>
         <a class="nav-item nav-link" href="{{url_for('reviews')}}">Arvostelut</a>
         <a class="nav-item nav-link" href="{{url_for('search')}}">Haku</a>
         {% if session.username %}
