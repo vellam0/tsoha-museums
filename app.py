@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, url_for, session, jsonify, has_request_context
 from datetime import datetime
 from functools import wraps
+import secrets
 from config import app
 from repositories.museum_repository \
     import get_museums, get_museum_by_id, create_museum, del_museum, update_museum, search_museums
@@ -26,6 +27,12 @@ def admin_required(f):
             return redirect("/")
         return f(*args, **kwargs)
     return decorated_function
+
+
+@app.before_request
+def is_csrf_token():
+    if 'csrf_token' not in session:
+        session['csrf_token'] = secrets.token_hex(16)
 
 
 @app.before_request
