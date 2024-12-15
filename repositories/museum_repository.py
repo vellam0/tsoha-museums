@@ -1,5 +1,6 @@
 from config import db
 from sqlalchemy import text
+from repositories.location_repository import address_to_coordinates, update_locations_from_museums
 
 def get_museums():
     sql = text("SELECT * FROM museums")
@@ -21,12 +22,32 @@ def get_museum_by_name(name):
     return result.fetchone()
 
 
+def location_for_museum(museum_id, name, address):
+    lat, lon = address_to_coordinates(address)
+    sql_insert = text("""
+        INSERT INTO locations (id, name, address, lat, lon)
+        VALUES (:id, :name, :address, :lat, :lon)
+        ON CONFLICT (id)
+        DO UPDATE SET
+            name = EXCLUDED.name,
+            address = EXCLUDED.address,
+            lat = EXCLUDED.lat,
+            lon = EXCLUDED.lon""")
+    db.session.execute(sql_insert, {
+            "id": museum_id,
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "lon": lon})
+    db.session.commit()
+    
+
 def create_museum(name, bio, address, opening_hours, museum_type, tags, img_url):
     sql = text("""INSERT INTO museums 
                (name, bio, address, opening_hours, museum_type, tags, img_url)
                VALUES 
                (:name, :bio, :address, :opening_hours, :museum_type, :tags, :img_url)""")
-    db.session.execute(sql, {
+    result = db.session.execute(sql, {
         "name": name,
         "bio": bio,
         "address": address,
@@ -35,6 +56,8 @@ def create_museum(name, bio, address, opening_hours, museum_type, tags, img_url)
         "tags": tags,
         "img_url": img_url
     })
+    museum_id = result.fetchone().id
+    location_for_museum(museum_id, name, address)
     db.session.commit()
 
 
