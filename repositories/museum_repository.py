@@ -24,6 +24,8 @@ def get_museum_by_name(name):
 
 def location_for_museum(museum_id, name, address):
     lat, lon = address_to_coordinates(address)
+    if lat is None or lon is None:
+        return "Ei koordinaatteja"
     sql_insert = text("""
         INSERT INTO locations (id, name, address, lat, lon)
         VALUES (:id, :name, :address, :lat, :lon)
@@ -46,7 +48,7 @@ def create_museum(name, bio, address, opening_hours, museum_type, tags, img_url)
     sql = text("""INSERT INTO museums 
                (name, bio, address, opening_hours, museum_type, tags, img_url)
                VALUES 
-               (:name, :bio, :address, :opening_hours, :museum_type, :tags, :img_url)""")
+               (:name, :bio, :address, :opening_hours, :museum_type, :tags, :img_url) RETURNING id""")
     result = db.session.execute(sql, {
         "name": name,
         "bio": bio,

@@ -1,7 +1,7 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(12) NOT NULL UNIQUE,
-    password VARCHAR(20) NOT NULL
+    username VARCHAR(25) NOT NULL UNIQUE,
+    password VARCHAR(150) NOT NULL
 );
 
 CREATE TABLE museums (

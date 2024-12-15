@@ -8,10 +8,10 @@ def address_to_coordinates(address):
     params = {'q': address, 'format': 'json', 'countrycodes': 'fi'}
     headers = {'User-Agent': 'Museosovellus/1.0 (18c06ve7l@mozmail.com)'}
     response = requests.get(url, params=params, headers=headers)
-    print(response)
     if response.status_code == 200 and response.json():
         data = response.json()[0]
         return float(data['lat']), float(data['lon'])
+    return None, None
 
 
 def update_locations_from_museums():
@@ -31,8 +31,7 @@ def update_locations_from_museums():
                     name = EXCLUDED.name,
                     address = EXCLUDED.address,
                     lat = EXCLUDED.lat,
-                    lon = EXCLUDED.lon
-            """)
+                    lon = EXCLUDED.lon""")
             db.session.execute(sql_insert, {
                 'id': museum_id,
                 'name': name,
