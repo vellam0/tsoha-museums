@@ -36,6 +36,6 @@ Sovellus on isännöity Renderin ilmaisessa palvelussa, minkä vuoksi palvelin s
 
 6. Käynnistä sovellus komennolla
   ```
-  python3 src/index.py
+  python3 app.py
   ```
    
