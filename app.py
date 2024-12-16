@@ -14,7 +14,7 @@ from util import validate_login_info, validate_review_form, validate_museum_form
 @app.template_filter("format_date")
 def format_date(value):
     try:
-        return datetime.strptime(value, "%d-%m-%Y %H:%M").strftime("%d.%m.%Y klo %H:%M")
+        return datetime.strptime(value, "%Y-%m-%d %H:%M:%S").strftime("%d.%m.%Y klo %H:%M")
     except (ValueError, TypeError):
         return value
 

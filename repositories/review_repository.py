@@ -4,7 +4,7 @@ from datetime import date, datetime
 
 
 def create_review(title, review_text, stars, museum_id, author_id):
-    now = datetime.now().strftime("%d-%m-%Y %H:%M")
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     sql = text("""INSERT INTo reviews (title, review_text, stars, date, museum_id, author_id)
                VALUES (:title, :review_text, :stars, :date, :museum_id, :author_id)""")
     db.session.execute(sql, {
