@@ -224,7 +224,9 @@ def reviews():
         for review in reviews]
     
     sort_by = request.args.get("sort", "date")
-    if sort_by == "stars":
+    if sort_by == "date":
+        museums_and_reviews = sorted(museums_and_reviews, key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d %H:%M:%S"), reverse=True)
+    elif sort_by == "stars":
         museums_and_reviews = sorted(museums_and_reviews, key=lambda x: x["stars"], reverse=True)
     elif sort_by == "title":
         museums_and_reviews = sorted(museums_and_reviews, key=lambda x: x["title"].lower())
